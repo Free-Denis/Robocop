@@ -3,24 +3,26 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model implements EntityProvider { // Реализуем интерфейс EntityProvider
+public class Model implements EntityProvider {
     private final List<Entity> entities = new ArrayList<>();
+    private final Robot robot;
 
     public Model() {
-        entities.add(new Robot()); // Добавляем робота в модель
+        robot = new Robot();
+        entities.add(robot);
     }
 
     @Override
-    public List<Entity> getEntities() { // Реализуем метод интерфейса
+    public List<Entity> getEntities() {
         return entities;
     }
 
+    public Robot getRobot() {
+        return robot;
+    }
+
     public void sendMouseClickEvent(int x, int y) {
-        for (Entity entity : entities) {
-            if (entity instanceof Robot) {
-                ((Robot) entity).setTargetPosition(x, y);
-            }
-        }
+        robot.setTargetPosition(x, y);
     }
 
     public void update(double duration) {
