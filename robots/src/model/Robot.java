@@ -8,6 +8,12 @@ public class Robot implements Entity {
     private volatile int targetPositionX = 150;
     private volatile int targetPositionY = 100;
 
+    // Точки победы и поражения
+    private final int winPointX = 500;
+    private final int winPointY = 500;
+    private final int losePointX = 700;
+    private final int losePointY = 100;
+
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
@@ -34,6 +40,16 @@ public class Robot implements Entity {
     public void setTargetPosition(int x, int y) {
         targetPositionX = x;
         targetPositionY = y;
+    }
+
+    public boolean checkWin() {
+        double distanceToWin = GameMath.distance(positionX, positionY, winPointX, winPointY);
+        return distanceToWin < 10; // Робот достиг точки победы
+    }
+
+    public boolean checkLose() {
+        double distanceToLose = GameMath.distance(positionX, positionY, losePointX, losePointY);
+        return distanceToLose < 10; // Робот достиг точки поражения
     }
 
     @Override
@@ -74,5 +90,10 @@ public class Robot implements Entity {
         positionY = newY;
         double newDirection = GameMath.asNormalizedRadians(direction + angularVelocity * duration);
         direction = newDirection;
+    }
+
+    public void setPosition(double x, double y) {
+        this.positionX = x;
+        this.positionY = y;
     }
 }
