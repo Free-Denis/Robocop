@@ -15,8 +15,9 @@ public class GameVisualizer extends JPanel {
 
     public GameVisualizer(EntityProvider entityProvider) {
         this.entityProvider = entityProvider;
-        // Регистрируем визуализатор для робота
         visualizers.put(model.Robot.class, new RobotVisualizer());
+        visualizers.put(model.WinPoint.class, new WinPointVisualizer());
+        visualizers.put(model.LosePoint.class, new LosePointVisualizer());
     }
 
     @Override
@@ -28,7 +29,6 @@ public class GameVisualizer extends JPanel {
         for (Entity entity : entities) {
             EntityVisualizer<?> visualizer = visualizers.get(entity.getClass());
             if (visualizer != null) {
-                // Используем cast для корректного типа
                 drawEntity(g2d, entity, visualizer);
             }
         }
