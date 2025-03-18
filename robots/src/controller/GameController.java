@@ -20,10 +20,9 @@ public class GameController {
             model.update(10);
             gameVisualizer.repaint();
 
-            // Проверка завершения игры
-            if (model.getRobot().checkWin()) {
+            if (model.getWinPoint().checkWin(model.getRobot())) {
                 endGame("Победа! Вы достигли точки победы!");
-            } else if (model.getRobot().checkLose()) {
+            } else if (model.getLosePoint().checkLose(model.getRobot())) {
                 endGame("Поражение! Вы достигли точки поражения!");
             }
         });
@@ -32,15 +31,14 @@ public class GameController {
         gameVisualizer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                model.getRobot().setTargetPosition(e.getX(), e.getY());
+                model.sendMouseClickEvent(e.getX(), e.getY());
             }
         });
     }
 
     private void endGame(String message) {
-        timer.stop(); // Останавливаем таймер
+        timer.stop();
 
-        // Создаём диалоговое окно
         int option = JOptionPane.showOptionDialog(
                 gameVisualizer,
                 message,
@@ -60,9 +58,9 @@ public class GameController {
     }
 
     private void restartGame() {
-        model.getRobot().setPosition(100, 100); // Сброс позиции робота
-        model.getRobot().setTargetPosition(150, 100); // Сброс цели
-        timer.start(); // Перезапуск таймера
+        model.getRobot().setPosition(100, 100);
+        model.getRobot().setTargetPosition(150, 100);
+        timer.start();
     }
 
     public void start() {
