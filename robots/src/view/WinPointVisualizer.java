@@ -1,6 +1,6 @@
 package view;
 
-import model.WinPoint;
+import model.entities.WinPoint;
 import java.awt.*;
 
 public class WinPointVisualizer extends EntityVisualizer<WinPoint> {

@@ -1,6 +1,6 @@
 package view;
 
-import model.Entity;
+import model.entities.Entity;
 import java.awt.Graphics2D;
 
 public abstract class EntityVisualizer<E extends Entity> {

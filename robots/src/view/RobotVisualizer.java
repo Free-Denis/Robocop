@@ -1,6 +1,6 @@
 package view;
 
-import model.Robot;
+import model.entities.Robot;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 

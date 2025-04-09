@@ -1,48 +1,72 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import controller.ModelController;
+import model.entities.*;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Model implements EntityProvider {
     private final List<Entity> entities = new ArrayList<>();
-    private final Robot robot;
-    private final WinPoint winPoint;
-    private final LosePoint losePoint;
+    private GameState currentGameState = GameState.PLAYING;
 
     public Model() {
-        robot = new Robot();
-        winPoint = new WinPoint(500, 500);
-        losePoint = new LosePoint(700, 700);
+        initializeLevel();
+    }
 
+    private void initializeLevel() {
+        entities.clear();
+
+        Robot robot = new Robot();
+        robot.setPosition(100, 100);
+        robot.setTargetPosition(150, 100);
         entities.add(robot);
-        entities.add(winPoint);
-        entities.add(losePoint);
+
+        entities.add(new WinPoint(500, 500));
+        entities.add(new LosePoint(700, 700));
+    }
+
+    public void reset() {
+        currentGameState = GameState.PLAYING;
+        initializeLevel();
+        findFirst(e -> e instanceof Robot).ifPresent(e -> {
+            Robot r = (Robot) e;
+            r.setPosition(100, 100);
+            r.setTargetPosition(150, 100);
+        });
+    }
+
+    public void InternalUpdate(ModelController controller, double duration) {
+        List<Entity> currentEntities = new ArrayList<>(entities);
+        for (Entity entity : currentEntities) {
+            if (currentGameState == GameState.PLAYING) {
+                entity.update(controller, duration);
+            }
+        }
     }
 
     @Override
     public List<Entity> getEntities() {
-        return entities;
+        return Collections.unmodifiableList(entities);
     }
 
-    public Robot getRobot() {
-        return robot;
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> Optional<T> findFirst(Predicate<Entity> predicate) {
+        return (Optional<T>) entities.stream()
+                .filter(predicate)
+                .findFirst();
     }
 
-    public WinPoint getWinPoint() {
-        return winPoint;
+    @Override
+    public GameState checkGameState() {
+        return currentGameState;
     }
 
-    public LosePoint getLosePoint() {
-        return losePoint;
-    }
-
-    public void sendMouseClickEvent(int x, int y) {
-        robot.setTargetPosition(x, y);
-    }
-
-    public void update(double duration) {
-        for (Entity entity : entities) {
-            entity.update(duration);
+    public void setGameState(GameState newState) {
+        if (this.currentGameState == GameState.PLAYING) {
+            this.currentGameState = newState;
+            //System.out.println("Game State Changed To: " + newState);
         }
     }
 }
