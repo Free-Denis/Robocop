@@ -1,7 +1,11 @@
 package view;
 
-import model.Entity;
-import model.EntityProvider;
+import model.Model;
+import model.entities.Entity;
+import model.entities.EntityProvider;
+import model.entities.LosePoint;
+import model.entities.Robot;
+import model.entities.WinPoint;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +17,11 @@ public class GameVisualizer extends JPanel {
     private final EntityProvider entityProvider;
     private final Map<Class<? extends Entity>, EntityVisualizer<?>> visualizers = new HashMap<>();
 
-    public GameVisualizer(EntityProvider entityProvider) {
+    public GameVisualizer(Model entityProvider) {
         this.entityProvider = entityProvider;
-        visualizers.put(model.Robot.class, new RobotVisualizer());
-        visualizers.put(model.WinPoint.class, new WinPointVisualizer());
-        visualizers.put(model.LosePoint.class, new LosePointVisualizer());
+        visualizers.put(Robot.class, new RobotVisualizer());
+        visualizers.put(WinPoint.class, new WinPointVisualizer());
+        visualizers.put(LosePoint.class, new LosePointVisualizer());
     }
 
     @Override

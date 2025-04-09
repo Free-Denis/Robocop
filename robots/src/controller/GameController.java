@@ -1,5 +1,6 @@
 package controller;
 
+import model.GameState;
 import model.Model;
 import view.GameVisualizer;
 
@@ -8,22 +9,30 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class GameController {
-    private final Model model;
     private final GameVisualizer gameVisualizer;
     private Timer timer;
+    private final ModelController modelController;
+    private final Model model;
 
     public GameController() {
         model = new Model();
+        modelController = new ModelController(model);
         gameVisualizer = new GameVisualizer(model);
 
+        modelController.setUpdateDuration(10);
+
         timer = new Timer(10, e -> {
-            model.update(10);
+            modelController.update();
             gameVisualizer.repaint();
 
-            if (model.getWinPoint().checkWin(model.getRobot())) {
-                endGame("Победа! Вы достигли точки победы!");
-            } else if (model.getLosePoint().checkLose(model.getRobot())) {
-                endGame("Поражение! Вы достигли точки поражения!");
+            GameState state = modelController.checkGameState();
+
+            if (state != GameState.PLAYING) {
+                timer.stop();
+                String message = (state == GameState.VICTORY)
+                        ? "Победа! Вы достигли точки победы!"
+                        : "Поражение! Вы достигли точки поражения!";
+                endGame(message);
             }
         });
         timer.start();
@@ -31,7 +40,9 @@ public class GameController {
         gameVisualizer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                model.sendMouseClickEvent(e.getX(), e.getY());
+                if (modelController.checkGameState() == GameState.PLAYING) {
+                    modelController.setRobotTargetPosition(e.getX(), e.getY());
+                }
             }
         });
     }
@@ -58,8 +69,8 @@ public class GameController {
     }
 
     private void restartGame() {
-        model.getRobot().setPosition(100, 100);
-        model.getRobot().setTargetPosition(150, 100);
+        modelController.resetGame();
+        gameVisualizer.repaint();
         timer.start();
     }
 

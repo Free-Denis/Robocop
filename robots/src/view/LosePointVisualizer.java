@@ -1,6 +1,6 @@
 package view;
 
-import model.LosePoint;
+import model.entities.LosePoint;
 import java.awt.*;
 
 public class LosePointVisualizer extends EntityVisualizer<LosePoint> {
