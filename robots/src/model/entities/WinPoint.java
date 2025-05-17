@@ -1,6 +1,6 @@
 package model.entities;
 
-import controller.ModelController;
+import model.ModelController;
 import model.GameMath;
 import model.GameState;
 
@@ -30,16 +30,13 @@ public class WinPoint implements Entity {
 
     @Override
     public void update(ModelController controller, double duration) {
-        if (controller.checkGameState() == GameState.PLAYING) {
-            Optional<Robot> robotOpt = controller.findFirst(e -> e instanceof Robot)
-                    .map(e -> (Robot) e);
+        Optional<Robot> robotOpt = controller.findFirst(e -> e instanceof Robot).map(e -> (Robot) e);
 
-            if (robotOpt.isPresent()) {
-                Robot robot = robotOpt.get();
-                double distance = GameMath.distance(x, y, robot.getPositionX(), robot.getPositionY());
-                if (distance < size / 2.0) {
-                    controller.setGameState(GameState.VICTORY);
-                }
+        if (robotOpt.isPresent()) {
+            Robot robot = robotOpt.get();
+            double distance = GameMath.distance(x, y, robot.getPositionX(), robot.getPositionY());
+            if (distance < size / 2.0) {
+                controller.setGameState(GameState.VICTORY);
             }
         }
     }

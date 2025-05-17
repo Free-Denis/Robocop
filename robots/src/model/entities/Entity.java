@@ -1,6 +1,6 @@
 package model.entities;
 
-import controller.ModelController;
+import model.ModelController;
 
 public interface Entity {
     void update(ModelController controller, double duration);

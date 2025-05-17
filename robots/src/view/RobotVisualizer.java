@@ -7,8 +7,10 @@ import java.awt.geom.AffineTransform;
 public class RobotVisualizer extends EntityVisualizer<Robot> {
     @Override
     public void draw(Graphics2D g, Robot robot) {
-        AffineTransform t = AffineTransform.getRotateInstance(robot.getDirection(), robot.getPositionX(), robot.getPositionY());
-        g.setTransform(t);
+        AffineTransform originalTransform = g.getTransform();
+
+        AffineTransform robotTransform = AffineTransform.getRotateInstance(robot.getDirection(), robot.getPositionX(), robot.getPositionY());
+        g.setTransform(robotTransform);
         g.setColor(Color.MAGENTA);
         fillOval(g, (int) robot.getPositionX(), (int) robot.getPositionY(), 30, 10);
         g.setColor(Color.BLACK);
@@ -18,7 +20,12 @@ public class RobotVisualizer extends EntityVisualizer<Robot> {
         g.setColor(Color.BLACK);
         drawOval(g, (int) robot.getPositionX() + 10, (int) robot.getPositionY(), 5, 5);
 
-        drawTarget(g, robot.getTargetPositionX(), robot.getTargetPositionY());
+        g.setTransform(originalTransform);
+
+        Point finalTarget = robot.getFinalTarget();
+        if (finalTarget != null) {
+            drawTarget(g, finalTarget.x, finalTarget.y);
+        }
     }
 
     private void drawTarget(Graphics2D g, int x, int y) {

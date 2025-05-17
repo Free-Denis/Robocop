@@ -2,6 +2,7 @@ package controller;
 
 import model.GameState;
 import model.Model;
+import model.ModelController;
 import view.GameVisualizer;
 
 import javax.swing.*;
@@ -11,21 +12,24 @@ import java.awt.event.MouseEvent;
 public class GameController {
     private final GameVisualizer gameVisualizer;
     private Timer timer;
-    private final ModelController modelController;
+    //private final ModelController modelController;
     private final Model model;
 
     public GameController() {
         model = new Model();
-        modelController = new ModelController(model);
+        //modelController = new ModelController(model);
         gameVisualizer = new GameVisualizer(model);
 
-        modelController.setUpdateDuration(10);
+        //modelController.setUpdateDuration(10);
+        model.setUpdateDuration(10);
 
         timer = new Timer(10, e -> {
-            modelController.update();
+            //modelController.update();
+            model.update(model.getUpdateDuration());
             gameVisualizer.repaint();
 
-            GameState state = modelController.checkGameState();
+            //GameState state = modelController.checkGameState();
+            GameState state = model.checkGameState();
 
             if (state != GameState.PLAYING) {
                 timer.stop();
@@ -40,8 +44,11 @@ public class GameController {
         gameVisualizer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (modelController.checkGameState() == GameState.PLAYING) {
-                    modelController.setRobotTargetPosition(e.getX(), e.getY());
+//                if (modelController.checkGameState() == GameState.PLAYING) {
+//                    modelController.setRobotTargetPosition(e.getX(), e.getY());
+//                }
+                if (model.checkGameState() == GameState.PLAYING) {
+                    model.setRobotTargetPosition(e.getX(), e.getY());
                 }
             }
         });
@@ -69,7 +76,8 @@ public class GameController {
     }
 
     private void restartGame() {
-        modelController.resetGame();
+        //modelController.resetGame();
+        model.resetGame();
         gameVisualizer.repaint();
         timer.start();
     }
